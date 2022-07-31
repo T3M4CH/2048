@@ -45,7 +45,7 @@ namespace Game.Tiles
 
         private void Start()
         {
-            _monoTileView.Initialize(size);
+            _monoTileView.Initialize(this);
             _monoTileView.OnMoveComplete += () => OnActionComplete.Invoke();
             _monoTileView.OnDisappeared += () => Destroy(gameObject);
             X = Mathf.RoundToInt(transform.position.x);

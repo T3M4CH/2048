@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.43424192, g: 0.4811309, b: 0.56203675, a: 1}
+  m_IndirectSpecularColor: {r: 0.17276844, g: 0.21589245, b: 0.2978263, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -217,7 +217,6 @@ GameObject:
   - component: {fileID: 17462440}
   - component: {fileID: 17462439}
   - component: {fileID: 17462438}
-  - component: {fileID: 17462441}
   m_Layer: 0
   m_Name: SceneContext
   m_TagString: Untagged
@@ -237,6 +236,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f62ca8d9c092523469ed317c5503af1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioSettings:
+    audioStorage:
+    - <Key>k__BackingField: Merge
+      <Value>k__BackingField: {fileID: 8300000, guid: c8e137425b1b75347815b118087c8231, type: 3}
+    <AudioSource>k__BackingField: {fileID: 963194229}
   colorSettings:
     <Colors>k__BackingField:
     - {r: 0.854902, g: 0.21960786, b: 0.21960786, a: 1}
@@ -244,11 +248,7 @@ MonoBehaviour:
     - {r: 0.97647065, g: 0.7960785, b: 0.24313727, a: 1}
     - {r: 0.17254902, g: 0.7254902, b: 0.13333334, a: 1}
     - {r: 0.5529412, g: 0.098039225, b: 0.80392164, a: 1}
-  audioSettings:
-    audioStorage:
-    - <Key>k__BackingField: Merge
-      <Value>k__BackingField: {fileID: 8300000, guid: c8e137425b1b75347815b118087c8231, type: 3}
-    <AudioSource>k__BackingField: {fileID: 963194229}
+  mergeEffect: {fileID: 2719187884004402406, guid: 0c1ca056889650b4a8c9f9afbd1f86b2, type: 3}
   tilePrefab: {fileID: 1941152224432988693, guid: 634196b316b0a394789ad6d87b75540a, type: 3}
 --- !u!114 &17462439
 MonoBehaviour:
@@ -297,19 +297,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &17462441
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 17462437}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6ab499797ed7b04cabf2400bc2c5412, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  kok: {fileID: 1941152224432988693, guid: 634196b316b0a394789ad6d87b75540a, type: 3}
 --- !u!1 &33246951
 GameObject:
   m_ObjectHideFlags: 0
@@ -486,7 +473,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 322306357}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.4, z: 3.5}
+  m_LocalPosition: {x: 0, y: 0.4, z: 3.48}
   m_LocalScale: {x: 10, y: 1, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -670,7 +657,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 552359186}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 4.5, y: 0.4, z: -1}
+  m_LocalPosition: {x: 4.48, y: 0.4, z: -1}
   m_LocalScale: {x: 12, y: 1, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -885,7 +872,7 @@ Light:
   serializedVersion: 10
   m_Type: 1
   m_Shape: 0
-  m_Color: {r: 1, g: 0.8898988, b: 0.5896226, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -963,7 +950,8 @@ GameObject:
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
   - component: {fileID: 963194229}
-  m_Layer: 0
+  - component: {fileID: 963194230}
+  m_Layer: 6
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -1028,14 +1016,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.47739673, y: -0.52160025, z: 0.47712186, w: 0.5219007}
-  m_LocalPosition: {x: 3, y: 12, z: 2.5}
+  m_LocalRotation: {x: 0.45451945, y: -0.54167527, z: 0.45451945, w: 0.54167527}
+  m_LocalPosition: {x: 4, y: 10.5, z: 2.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 84.9, y: -89.967, z: 0}
+  m_LocalEulerAnglesHint: {x: 80, y: -90, z: 0}
 --- !u!82 &963194229
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1132,6 +1120,66 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &963194230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 948f4100a11a5c24981795d21301da5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  volumeTrigger: {fileID: 963194228}
+  volumeLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  stopNaNPropagation: 1
+  finalBlitToCameraTarget: 0
+  antialiasingMode: 1
+  temporalAntialiasing:
+    jitterSpread: 1
+    sharpness: 3
+    stationaryBlending: 0.99
+    motionBlending: 0.99
+  subpixelMorphologicalAntialiasing:
+    quality: 2
+  fastApproximateAntialiasing:
+    fastMode: 1
+    keepAlpha: 0
+  fog:
+    enabled: 1
+    excludeSkybox: 1
+  debugLayer:
+    lightMeter:
+      width: 512
+      height: 256
+      showCurves: 1
+    histogram:
+      width: 512
+      height: 256
+      channel: 3
+    waveform:
+      exposure: 0.12
+      height: 256
+    vectorscope:
+      size: 256
+      exposure: 0.12
+    overlaySettings:
+      linearDepth: 0
+      motionColorIntensity: 4
+      motionGridSize: 64
+      colorBlindnessType: 0
+      colorBlindnessStrength: 1
+  m_Resources: {fileID: 11400000, guid: d82512f9c8e5d4a4d938b575d47f88d4, type: 2}
+  m_ShowToolkit: 0
+  m_ShowCustomSorter: 0
+  breakBeforeColorGrading: 0
+  m_BeforeTransparentBundles: []
+  m_BeforeStackBundles: []
+  m_AfterStackBundles: []
 --- !u!1 &1162247714
 GameObject:
   m_ObjectHideFlags: 0
@@ -1158,7 +1206,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1162247714}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.5, y: 0.4, z: -3.5}
+  m_LocalPosition: {x: 0.5, y: 0.4, z: -3.48}
   m_LocalScale: {x: 3, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1226,7 +1274,6 @@ GameObject:
   - component: {fileID: 1258975478}
   - component: {fileID: 1258975477}
   - component: {fileID: 1258975476}
-  - component: {fileID: 1258975479}
   m_Layer: 0
   m_Name: Board
   m_TagString: Untagged
@@ -1300,19 +1347,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1258975479
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1258975475}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7191df3e7ce883f48855eb10a51d6fa8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  blocks: []
 --- !u!1 &1276509711
 GameObject:
   m_ObjectHideFlags: 0
@@ -1339,7 +1373,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1276509711}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: 0.4, z: 1.5}
+  m_LocalPosition: {x: 2, y: 0.4, z: 1.48}
   m_LocalScale: {x: 2, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1422,7 +1456,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1409319316}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1, y: 0.4, z: 1.5}
+  m_LocalPosition: {x: -0.98, y: 0.4, z: 1.48}
   m_LocalScale: {x: 2, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1505,7 +1539,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1710742047}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.4, z: -5.5}
+  m_LocalPosition: {x: 0, y: 0.4, z: -5.48}
   m_LocalScale: {x: 10, y: 1, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1588,7 +1622,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1882225850}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -3.5, y: 0.4, z: 0}
+  m_LocalPosition: {x: -3.48, y: 0.4, z: 0}
   m_LocalScale: {x: 10, y: 1, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -1,5 +1,4 @@
 using Game.Board;
-using Game.Board.Interfaces;
 using Game.Settings;
 using Game.Tiles;
 using Zenject;
@@ -9,9 +8,11 @@ namespace Game.Installers
 {
     public class GameInstaller : MonoInstaller
     {
-        [SerializeField] private SerializableColors colorSettings;
         [SerializeField] private SerializableAudioSettings audioSettings;
+        [SerializeField] private SerializableColors colorSettings;
+        [SerializeField] private ParticleSystem mergeEffect;
         [SerializeField] private GameObject tilePrefab;
+
         public override void InstallBindings()
         {
             Container
@@ -35,10 +36,18 @@ namespace Game.Installers
                 .NonLazy();
 
             Container
-                .BindInterfacesTo<CellService>()
-                .FromComponentsInHierarchy()
+                .Bind<TileStorage>()
                 .AsSingle();
-        }
 
+            Container
+                .BindInterfacesTo<CellService>()
+                .AsSingle();
+
+            Container
+                .BindMemoryPool<ParticleSystem, MemoryPool<ParticleSystem>>()
+                .WithInitialSize(10)
+                .FromComponentInNewPrefab(mergeEffect)
+                .UnderTransformGroup("Effects");
+        }
     }
 }

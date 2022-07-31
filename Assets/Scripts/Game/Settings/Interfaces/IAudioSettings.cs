@@ -10,7 +10,6 @@ namespace Game.Settings.Interfaces
             get;
         }
 
-        [field: SerializeField]
         public AudioSource AudioSource
         {
             get;

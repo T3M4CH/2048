@@ -1,59 +1,63 @@
 using System.Collections.Generic;
-using System.Linq;
 using Game.Board.Interfaces;
+using System.Linq;
+using UnityEngine;
 using Game.Enums;
 using Game.Tiles;
-using UnityEngine;
 
 namespace Game.Board
 {
-    public class CellService : MonoBehaviour, ICellService
+    public class CellService : ICellService
     {
-        [SerializeField] private List<MonoTileController> blocks;
-
-        private readonly int[,] _grid =
+        private readonly int[,] _grid;
+        private readonly TileStorage _tileStorage;
+        private ILevelPreset _levelPreset;
+        private List<MonoTileController> _blocks;
+        private int _height;
+        private int _width;
+        
+        private CellService(TileStorage tileStorage, ILevelPreset levelPreset)
         {
-            { 0, 0, 0, 0, 0, -1 },
-            { -1, 0, -1, -1, 0, -1 },
-            { -1, 0, 0, 0, 0, 0 },
-            { -1, 0, -1, -1, 0, -1 },
-            { 0, 0, 0, 0, 0, -1 }
-        };
-
+            _grid = levelPreset.Grid;
+            _width = _grid.GetLength(1);
+            _height = _grid.GetLength(0);
+            _tileStorage = tileStorage;
+            levelPreset.OnLevelBuilt += Initialize;
+        }
+        
         public void GetSuitableCell(MonoTileController tile, Vector2Int direction)
         {
-            //Vertical
             if (direction.y != 0)
             {
                 var i = tile.X;
                 _grid[i, tile.Z] = 0;
-                while (i is >= 0 and <= 4)
+                while (i >= 0 &&  i <= _height - 1)
                 {
                     i -= direction.y;
-                    if (i is < 0 or > 4 || (_grid[i, tile.Z] != 0 && _grid[i, tile.Z] != tile.size))
+                    if (i < 0 || i > _height - 1 || (_grid[i, tile.Z] != 0 && _grid[i, tile.Z] != tile.size))
                     {
                         i += direction.y;
                         break;
                     }
 
                     if (_grid[i, tile.Z] != tile.size) continue;
-                    if (i is > 0 and < 4)
+                    if (i > 0 && i < _height - 1)
                     {
                         i -= direction.y;
                         if (_grid[i, tile.Z] == tile.size + 1)
                         {
-                            var targetBlock = blocks.Find(x => x.X == i && x.Z == tile.Z && !x.victim);
-                            var consumerBlock = blocks.Find(x => x.X == i + direction.y && x.Z == tile.Z);
+                            var targetBlock = _blocks.Find(x => x.X == i && x.Z == tile.Z && !x.victim);
+                            var consumerBlock = _blocks.Find(x => x.X == i + direction.y && x.Z == tile.Z);
                             MergeThrough(EAxis.Vertical, direction.y, consumerBlock, tile, targetBlock);
                             tile.SetVertical(i);
                             return;
                         }
-                
+
                         i += direction.y;
                     }
 
 
-                    var blockPref = blocks.Find(x => x.X == i && x.Z == tile.Z);
+                    var blockPref = _blocks.Find(x => x.X == i && x.Z == tile.Z);
                     tile.X = i;
                     if (blockPref == null || tile.size != blockPref.size)
                     {
@@ -69,7 +73,7 @@ namespace Game.Board
                     tile.victim = true;
                     tile.ChangeSize(tile.size);
                     blockPref.ChangeSize(blockPref.size + 1);
-                
+
                     _grid[i, tile.Z] = blockPref.size;
                     tile.SetVertical(i);
                     return;
@@ -82,38 +86,37 @@ namespace Game.Board
                 tile.SetVertical(i);
             }
 
-            //HORIZONTAL
             if (direction.x != 0)
             {
                 var i = tile.Z;
                 _grid[tile.X, i] = 0;
-                while (i is >= 0 and <= 5)
+                while (i >= 0 && i <= _width - 1)
                 {
                     i += direction.x;
-                    if (i is < 0 or > 5 || (_grid[tile.X, i] != 0 && _grid[tile.X, i] != tile.size))
+                    if (i < 0 || i > _width - 1 || (_grid[tile.X, i] != 0 && _grid[tile.X, i] != tile.size))
                     {
                         i -= direction.x;
                         break;
                     }
 
                     if (_grid[tile.X, i] != tile.size) continue;
-                    if (i is > 0 and < 5)
+                    if (i > 0  && i < _width - 1)
                     {
                         i += direction.x;
                         if (_grid[tile.X, i] == tile.size + 1)
                         {
-                            var targetBlock = blocks.Find(x => x.Z == i && x.X == tile.X && !x.victim);
-                            var consumerBlock = blocks.Find(x => x.Z == i - direction.x && x.X == tile.X);
+                            var targetBlock = _blocks.Find(x => x.Z == i && x.X == tile.X && !x.victim);
+                            var consumerBlock = _blocks.Find(x => x.Z == i - direction.x && x.X == tile.X);
                             MergeThrough(EAxis.Horizontal, direction.x, consumerBlock, tile, targetBlock);
                             tile.SetHorizontal(i);
                             return;
                         }
-                
+
                         i -= direction.x;
                     }
 
 
-                    var blockPref = blocks.Find(x => x.Z == i && x.X == tile.X);
+                    var blockPref = _blocks.Find(x => x.Z == i && x.X == tile.X);
                     tile.Z = i;
                     if (blockPref == null || tile.size != blockPref.size)
                     {
@@ -143,7 +146,8 @@ namespace Game.Board
             }
         }
 
-        private void MergeThrough(EAxis eAxis, int directionValue, MonoTileController victimMonoTileController, MonoTileController currentMonoTileController, MonoTileController targetMonoTileController)
+        private void MergeThrough(EAxis eAxis, int directionValue, MonoTileController victimMonoTileController,
+            MonoTileController currentMonoTileController, MonoTileController targetMonoTileController)
         {
             if (eAxis == EAxis.Horizontal)
             {
@@ -175,21 +179,18 @@ namespace Game.Board
 
         private void RemoveTile(MonoTileController monoTileController)
         {
-            blocks.Remove(monoTileController);
-            TileQuery.Tiles = blocks;
+            _blocks.Remove(monoTileController);
+            _tileStorage.Tiles = _blocks;
             monoTileController.Sacrifice();
         }
 
-        private void Start()
+        private void Initialize()
         {
-            blocks = FindObjectsOfType<MonoTileController>().ToList();
-            foreach (var block in blocks)
+            _blocks = _tileStorage.Tiles.ToList();
+            foreach (var block in _blocks)
             {
-                var blockPos = block.transform.position;
                 _grid[block.X, block.Z] = block.size;
             }
-            
-            TileQuery.Tiles = blocks;
         }
     }
 }

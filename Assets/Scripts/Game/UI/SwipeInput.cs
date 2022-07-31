@@ -13,18 +13,20 @@ namespace Game.UI
             
         private bool _isLocked;
         private Vector2 _startPosition;
+        private TileStorage _tileStorage;
         private ICellService _cellService;
         
         [Inject]
-        private void Construct(ICellService cellService)
+        private void Construct(ICellService cellService, TileStorage tileStorage)
         {
+            _tileStorage = tileStorage;
             _cellService = cellService;
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (_isLocked) return;
-            var orderedBlocks = TileQuery.Tiles;
+            var orderedBlocks = _tileStorage.Tiles;
             if (Mathf.Abs(eventData.delta.y) > Mathf.Abs(eventData.delta.x))
             {
                 if(Mathf.Abs(eventData.delta.y) < 1f) return;
