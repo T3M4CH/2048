@@ -56,7 +56,6 @@ namespace Game.Board
                         i += direction.y;
                     }
 
-
                     var blockPref = _blocks.Find(x => x.x == i && x.z == tile.z);
                     tile.x = i;
                     if (blockPref == null || tile.size != blockPref.size)
@@ -67,7 +66,6 @@ namespace Game.Board
                         tile.SetVertical(i, direction.y);
                         return;
                     }
-
 
                     if (tile.combineElement) continue;
                     tile.combineElement = true;
@@ -115,7 +113,6 @@ namespace Game.Board
                         i -= direction.x;
                     }
 
-
                     var blockRef = _blocks.Find(x => x.z == i && x.x == tile.x);
                     tile.z = i;
                     if (blockRef == null || tile.size != blockRef.size)
@@ -127,12 +124,10 @@ namespace Game.Board
                         return;
                     }
 
-
                     if (tile.combineElement) continue;
                     tile.combineElement = true;
                     tile.ChangeSize(tile.size);
                     blockRef.ChangeSize(blockRef.size + 1);
-
 
                     _grid[tile.x, i] = blockRef.size;
                     tile.SetHorizontal(i, direction.x);
