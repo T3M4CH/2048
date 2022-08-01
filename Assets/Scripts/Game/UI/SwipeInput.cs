@@ -10,12 +10,12 @@ namespace Game.UI
     public class SwipeInput : MonoBehaviour, IBeginDragHandler, IDragHandler
     {
         [SerializeField] private Canvas canvas;
-            
+
         private bool _isLocked;
         private Vector2 _startPosition;
         private TileStorage _tileStorage;
         private ICellService _cellService;
-        
+
         [Inject]
         private void Construct(ICellService cellService, TileStorage tileStorage)
         {
@@ -29,10 +29,10 @@ namespace Game.UI
             var orderedBlocks = _tileStorage.Tiles;
             if (Mathf.Abs(eventData.delta.y) > Mathf.Abs(eventData.delta.x))
             {
-                if(Mathf.Abs(eventData.delta.y) < 1f) return;
+                if (Mathf.Abs(eventData.delta.y) < 1f) return;
                 if (eventData.delta.y > 0)
                 {
-                    orderedBlocks = orderedBlocks.OrderBy(x => x.X);
+                    orderedBlocks = orderedBlocks.OrderBy(x => x.x);
                     for (int i = 0; i < 3; i++)
                     {
                         foreach (var block in orderedBlocks)
@@ -43,7 +43,7 @@ namespace Game.UI
                 }
                 else
                 {
-                    orderedBlocks = orderedBlocks.OrderByDescending(x => x.X);
+                    orderedBlocks = orderedBlocks.OrderByDescending(x => x.x);
                     for (int i = 0; i < 3; i++)
                     {
                         foreach (var block in orderedBlocks)
@@ -59,10 +59,10 @@ namespace Game.UI
 
             if (!(Mathf.Abs(eventData.delta.x) > Mathf.Abs(eventData.delta.y))) return;
             {
-                if(Mathf.Abs(eventData.delta.x) < 1) return;
+                if (Mathf.Abs(eventData.delta.x) < 1) return;
                 if (eventData.delta.x > 0)
                 {
-                    orderedBlocks = orderedBlocks.OrderByDescending(x => x.Z);
+                    orderedBlocks = orderedBlocks.OrderByDescending(x => x.z);
                     for (int i = 0; i < 3; i++)
                     {
                         foreach (var block in orderedBlocks)
@@ -73,7 +73,7 @@ namespace Game.UI
                 }
                 else
                 {
-                    orderedBlocks = orderedBlocks.OrderBy(x => x.Z);
+                    orderedBlocks = orderedBlocks.OrderBy(x => x.z);
                     for (int i = 0; i < 3; i++)
                     {
                         foreach (var block in orderedBlocks)
@@ -98,7 +98,6 @@ namespace Game.UI
         {
             _isLocked = false;
         }
-
 
         public void OnDrag(PointerEventData eventData)
         {

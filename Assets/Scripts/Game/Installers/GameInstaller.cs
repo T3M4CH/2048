@@ -30,6 +30,7 @@ namespace Game.Installers
                 .FromComponentOn(tilePrefab)
                 .AsSingle();
 
+
             Container
                 .BindInterfacesTo<LevelBuilder>()
                 .AsSingle()
@@ -42,7 +43,7 @@ namespace Game.Installers
             Container
                 .BindInterfacesTo<CellService>()
                 .AsSingle();
-
+            
             Container
                 .BindMemoryPool<ParticleSystem, MemoryPool<ParticleSystem>>()
                 .WithInitialSize(10)

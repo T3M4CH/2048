@@ -512,7 +512,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1941152224432988689}
   - component: {fileID: 1941152224432988691}
-  - component: {fileID: 6885993297433837031}
   m_Layer: 0
   m_Name: Tile
   m_TagString: Untagged
@@ -551,26 +550,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d007b94c34faab04cb1df360aa93bbfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  victim: 0
+  combineElement: 0
   size: 1
-  X: 0
-  Z: 0
---- !u!114 &6885993297433837031
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1941152224432988693}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 845fb3d9af958c6459fea09e24e02cc3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  particleSystem: {fileID: 0}
-  meshRenderer: {fileID: 1941152224542458614}
-  valueText: {fileID: 1941152223146960907}
-  trail: {fileID: 601777413}
+  x: 0
+  z: 0
+  tileViewSettings:
+    <MeshRenderer>k__BackingField: {fileID: 1941152224542458614}
+    <ValueText>k__BackingField: {fileID: 1941152223146960907}
+    <Trail>k__BackingField: {fileID: 601777413}
 --- !u!1 &1941152224542458600
 GameObject:
   m_ObjectHideFlags: 0

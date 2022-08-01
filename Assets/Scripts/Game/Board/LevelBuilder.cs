@@ -39,17 +39,17 @@ namespace Game.Board
                     if (Board[i, j] <= 0) continue;
                     var instance = _diContainer.InstantiatePrefab(_tileController).GetComponent<MonoTileController>();
                     instance.transform.position = new Vector3(i, 0, j);
-                    instance.Initialize(Board[i, j]);
+                    instance.Initialize(Board[i, j], i, j);
                     tiles.Add(instance);
                 }
             }
 
             _tileStorage.Tiles = tiles;
-            
+
             OnLevelBuilt.Invoke();
         }
 
-        public event Action OnLevelBuilt = () => {};
+        public event Action OnLevelBuilt = () => { };
         public int[,] Grid { get; } = Board;
     }
 }

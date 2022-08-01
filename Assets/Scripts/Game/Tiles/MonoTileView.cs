@@ -8,32 +8,46 @@ using TMPro;
 
 namespace Game.Tiles
 {
-    public class MonoTileView : MonoBehaviour
+    public class MonoTileView
     {
-        public event Action OnMoveComplete = () => { };
-        public event Action OnDisappeared = () => { };
-
-        [SerializeField] private SkinnedMeshRenderer meshRenderer;
-        [SerializeField] private TextMeshPro valueText;
-        [SerializeField] private TrailRenderer trail;
-
-        private bool _combine;
-        private bool _isPlaying;
-        private Color[] _colors;
-        private AudioClip _clip;
-        private AudioSource _source;
-        private MonoTileController _controller;
-        private IMemoryPool<ParticleSystem> _mergeEffects;
-
-        [Inject]
-        public void Construct(IAudioSettings audioSettings, IColorSettings colorSettings,
-            MemoryPool<ParticleSystem> effects)
+        public MonoTileView
+        (
+            IAudioSettings audioSettings,
+            IColorSettings colorSettings,
+            IMemoryPool<ParticleSystem> effects,
+            TileViewSettings settings,
+            MonoTileController tileController
+        )
         {
+            _meshRenderer = settings.MeshRenderer;
+            _valueText = settings.ValueText;
+            _trail = settings.Trail;
+            _transform = tileController.transform;
             _source = audioSettings.AudioSource;
             _clip = audioSettings.AudioStorage[AudioConstants.Merge];
             _colors = colorSettings.Colors;
             _mergeEffects = effects;
+
+            _controller = tileController;
+            var size = tileController.size;
+            ChangeColor(size);
+            ChangeText(size);
         }
+
+        public event Action OnMoveComplete = () => { };
+        public event Action OnDisappeared = () => { };
+
+        private SkinnedMeshRenderer _meshRenderer;
+        private TextMeshPro _valueText;
+        private TrailRenderer _trail;
+
+        private bool _isPlaying;
+        private Transform _transform;
+        private readonly Color[] _colors;
+        private readonly AudioClip _clip;
+        private readonly AudioSource _source;
+        private readonly MonoTileController _controller;
+        private readonly IMemoryPool<ParticleSystem> _mergeEffects;
 
         public void ChangeSize(int size)
         {
@@ -41,67 +55,81 @@ namespace Game.Tiles
             ChangeText(size);
         }
 
-        public void MoveVertical(int endValue)
+        public void MoveVertical(int endValue, int directionValue)
         {
             PlaySound();
-            if (Mathf.Abs(endValue - transform.position.x) <= 0.2f && !_isPlaying)
+            if (Mathf.Abs(endValue - _transform.position.x) <= 0.2f && !_isPlaying)
             {
                 _isPlaying = true;
-                transform.DOMoveX(transform.position.x - 0.5f, 0.25f).SetEase(Ease.OutBack)
+                var offset = directionValue;
+                _transform.DOMoveX(_transform.position.x - offset, 0.25f).SetEase(Ease.OutBack)
                     .OnComplete(() =>
                     {
                         _isPlaying = false;
-                        transform.DOMoveX(transform.position.x + 0.5f, 0.25f).SetEase(Ease.InBack);
+                        _transform.DOMoveX(_transform.position.x + offset, 0.25f).SetEase(Ease.InBack);
                         OnMoveComplete.Invoke();
                     });
                 return;
             }
 
-            transform.DOMoveX(transform.position.x + (endValue - transform.position.x), 0.5f)
+            _transform.DOMoveX(_transform.position.x + (endValue - _transform.position.x), 0.5f)
                 .SetEase(Ease.OutBack, 1, 0.5f)
                 .OnComplete(() => OnMoveComplete.Invoke());
         }
 
-        public void MoveHorizontal(int endValue)
+        public void MoveHorizontal(int endValue, int directionValue)
         {
             PlaySound();
-            if (Mathf.Abs(endValue - transform.position.z) <= 0.2f && !_isPlaying)
+            if (Mathf.Abs(endValue - _transform.position.z) <= 0.2f && !_isPlaying)
             {
                 _isPlaying = true;
-                transform.DOMoveZ(transform.position.z + 0.5f, 0.25f).SetEase(Ease.OutBack)
+                var offset = directionValue;
+                _transform.DOMoveZ(_transform.position.z + offset, 0.25f).SetEase(Ease.OutBack)
                     .OnComplete(() =>
                     {
                         _isPlaying = false;
-                        transform.DOMoveZ(transform.position.z - 0.5f, 0.25f).SetEase(Ease.InBack);
+                        _transform.DOMoveZ(_transform.position.z - offset, 0.25f).SetEase(Ease.InBack);
                         OnMoveComplete.Invoke();
                     });
                 return;
             }
 
-            transform.DOMoveZ(transform.position.z + (endValue - transform.position.z), 0.5f)
+            _transform.DOMoveZ(_transform.position.z + (endValue - _transform.position.z), 0.5f)
                 .SetEase(Ease.OutBack, 1, 0.5f)
                 .OnComplete(() => OnMoveComplete.Invoke());
+        }
+
+        public void Disappear()
+        {
+            PlaySound();
+            CreateEffect(out ParticleSystem effect);
+            _valueText.gameObject.SetActive(false);
+            _transform.DOScale(0, 3f).SetEase(Ease.OutBack).OnComplete(() =>
+            {
+                effect.gameObject.SetActive(false);
+                _mergeEffects.Despawn(effect);
+                OnDisappeared.Invoke();
+            });
         }
 
         private void ChangeText(int size)
         {
-            valueText.text = size.ToString();
+            _valueText.text = size.ToString();
         }
 
         private void ChangeColor(int size)
         {
             var color = _colors[size - 1];
-            meshRenderer.material.DOColor(color, 0.2f);
-            trail.startColor = color;
-            trail.endColor = color;
+            _meshRenderer.material.DOColor(color, 0.2f);
+            _trail.startColor = color;
+            _trail.endColor = color;
         }
 
         private void CreateEffect(out ParticleSystem effect)
         {
             effect = _mergeEffects.Spawn();
-            effect.transform.position = transform.position;
-            var direction = (new Vector3(_controller.X, 0, _controller.Z) + transform.position) / 2;
-            Debug.Log(direction);
+            effect.transform.position = _transform.position;
+            var direction = (new Vector3(_controller.x, 0, _controller.z) + _transform.position) / 2;
             effect.transform.LookAt(direction);
             var settings = effect.main;
             settings.startColor = _colors[_controller.size];
@@ -114,27 +142,6 @@ namespace Game.Tiles
             {
                 _source.PlayOneShot(_clip);
             }
-        }
-
-        public void Disappear()
-        {
-            PlaySound();
-            CreateEffect(out ParticleSystem effect);
-            valueText.gameObject.SetActive(false);
-            transform.DOScale(0, 3f).SetEase(Ease.OutBack).OnComplete(() =>
-            {
-                effect.gameObject.SetActive(false);
-                _mergeEffects.Despawn(effect);
-                OnDisappeared.Invoke();
-            });
-        }
-
-        public void Initialize(MonoTileController tileController)
-        {
-            _controller = tileController;
-            var size = tileController.size;
-            ChangeColor(size);
-            ChangeText(size);
         }
     }
 }

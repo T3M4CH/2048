@@ -1,60 +1,61 @@
 using System;
+using Game.Settings.Interfaces;
+using TMPro;
 using UnityEngine;
+using Zenject;
 
 namespace Game.Tiles
 {
     public class MonoTileController : MonoBehaviour
     {
-        public event Action OnActionComplete = () => {};
-        public bool victim;
+        public event Action OnActionComplete = () => { };
+        public bool combineElement;
+        public int size = 1;
+        public int x;
+        public int z;
 
-        private MonoTileView _monoTileView;
+        [SerializeField] private TileViewSettings tileViewSettings;
 
-        public void Initialize(int sizeValue)
+        private MonoTileView _tileView;
+
+        [Inject]
+        private void Construct(IAudioSettings audioSettings, IColorSettings colorSettings,
+            MemoryPool<ParticleSystem> effects)
         {
+            _tileView = new MonoTileView(audioSettings, colorSettings, effects, tileViewSettings, this);
+            _tileView.OnMoveComplete += () => OnActionComplete.Invoke();
+            _tileView.OnDisappeared += () => Destroy(gameObject);
+        }
+
+        public void Initialize(int sizeValue, int xPos, int zPos)
+        {
+            x = xPos;
+            z = zPos;
             size = sizeValue;
-            _monoTileView = GetComponent<MonoTileView>();
         }
 
         public void ChangeSize(int value)
         {
             size = value;
-            _monoTileView.ChangeSize(value);
+            _tileView.ChangeSize(value);
         }
 
-        public void SetVertical(int value)
+        public void SetVertical(int value, int directionValue)
         {
-            //TODO: VALIDATE via Board height in model
-            X = value;
-            _monoTileView.MoveVertical(value);
+            x = value;
+            _tileView.MoveVertical(value, directionValue);
         }
 
-        public void SetHorizontal(int value)
+        public void SetHorizontal(int value, int directionValue)
         {
-            Z = value;
-            _monoTileView.MoveHorizontal(value);
+            z = value;
+            _tileView.MoveHorizontal(value, directionValue);
         }
 
-        public void Sacrifice()
+        public void Combine()
         {
-            // _period = 2;
-            // _amplitude = 1;
             OnActionComplete += () => { gameObject.SetActive(false); };
-            _monoTileView.Disappear();
+            _tileView.Disappear();
         }
-
-        private void Start()
-        {
-            _monoTileView.Initialize(this);
-            _monoTileView.OnMoveComplete += () => OnActionComplete.Invoke();
-            _monoTileView.OnDisappeared += () => Destroy(gameObject);
-            X = Mathf.RoundToInt(transform.position.x);
-            Z = Mathf.RoundToInt(transform.position.z);
-        }
-
-        public int size = 1;
-
-        public int X;
-        public int Z;
     }
 }
