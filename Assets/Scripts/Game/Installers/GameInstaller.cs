@@ -49,6 +49,9 @@ namespace Game.Installers
                 .WithInitialSize(10)
                 .FromComponentInNewPrefab(mergeEffect)
                 .UnderTransformGroup("Effects");
+
+            Container
+                .BindFactory<TileViewSettings, MonoTileController,TileView, TileView.Factory>();
         }
     }
 }

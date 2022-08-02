@@ -8,14 +8,14 @@ using TMPro;
 
 namespace Game.Tiles
 {
-    public class MonoTileView
+    public class TileView
     {
-        public MonoTileView
+        public TileView
         (
+            TileViewSettings settings,
             IAudioSettings audioSettings,
             IColorSettings colorSettings,
-            IMemoryPool<ParticleSystem> effects,
-            TileViewSettings settings,
+            MemoryPool<ParticleSystem> effects,
             MonoTileController tileController
         )
         {
@@ -142,6 +142,11 @@ namespace Game.Tiles
             {
                 _source.PlayOneShot(_clip);
             }
+        }
+
+        public class Factory : PlaceholderFactory<TileViewSettings, MonoTileController,TileView>
+        {
+            
         }
     }
 }

@@ -16,13 +16,12 @@ namespace Game.Tiles
 
         [SerializeField] private TileViewSettings tileViewSettings;
 
-        private MonoTileView _tileView;
+        private TileView _tileView;
 
         [Inject]
-        private void Construct(IAudioSettings audioSettings, IColorSettings colorSettings,
-            MemoryPool<ParticleSystem> effects)
+        private void Construct(TileView.Factory tileFactory)
         {
-            _tileView = new MonoTileView(audioSettings, colorSettings, effects, tileViewSettings, this);
+            _tileView = tileFactory.Create(tileViewSettings, this);
             _tileView.OnMoveComplete += () => OnActionComplete.Invoke();
             _tileView.OnDisappeared += () => Destroy(gameObject);
         }
